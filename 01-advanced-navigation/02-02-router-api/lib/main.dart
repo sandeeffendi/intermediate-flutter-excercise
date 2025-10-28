@@ -1,5 +1,7 @@
+import 'package:declarative_navigation/routes/page_manager.dart';
 import 'package:declarative_navigation/routes/router_delegate.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 void main() {
   runApp(const QuotesApp());
@@ -23,16 +25,18 @@ class _QuotesAppState extends State<QuotesApp> {
 
   @override
   Widget build(BuildContext context) {
+    return ChangeNotifierProvider(
+      create: (context) => PageManager(),
+      child: MaterialApp(
+        title: 'Quotes App',
 
-    return MaterialApp(
-      title: 'Quotes App',
+        /// todo 4: change Navigator widget to Router widget
+        home: Router(
+          routerDelegate: myRouterDelegate,
 
-      /// todo 4: change Navigator widget to Router widget
-      home: Router(
-        routerDelegate: myRouterDelegate,
-
-        /// todo 5: add backButtonnDispatcher to handle System Back Button
-        backButtonDispatcher: RootBackButtonDispatcher(),
+          /// todo 5: add backButtonnDispatcher to handle System Back Button
+          backButtonDispatcher: RootBackButtonDispatcher(),
+        ),
       ),
     );
   }

@@ -1,3 +1,4 @@
+import 'package:declarative_navigation/screen/form_screen.dart';
 import 'package:flutter/material.dart';
 
 import '../model/quote.dart';
@@ -22,6 +23,7 @@ class MyRouterDelegate extends RouterDelegate
   /// delete setState function, and
   /// change with notifiyListener().
   String? selectedQuote;
+  bool isForm = false;
 
   @override
   Widget build(BuildContext context) {
@@ -36,19 +38,35 @@ class MyRouterDelegate extends RouterDelegate
               selectedQuote = quoteId;
               notifyListeners();
             },
+            toFormScreen: () {
+              isForm = true;
+              notifyListeners();
+            },
           ),
         ),
         if (selectedQuote != null)
           MaterialPage(
             key: ValueKey(selectedQuote),
-            child: QuoteDetailsScreen(
-              quoteId: selectedQuote!,
+            child: QuoteDetailsScreen(quoteId: selectedQuote!),
+          ),
+        if (isForm)
+          MaterialPage(
+            key: const ValueKey('FormScreen'),
+            child: FormScreen(
+              onSend: () {
+                isForm = false;
+                notifyListeners();
+              },
             ),
           ),
       ],
       onDidRemovePage: (page) {
         if (page.key == ValueKey(selectedQuote)) {
           selectedQuote = null;
+          notifyListeners();
+        }
+        if (page.key == const ValueKey('FormScreen')) {
+          isForm = false;
           notifyListeners();
         }
       },
