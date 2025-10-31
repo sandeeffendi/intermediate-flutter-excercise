@@ -1,6 +1,5 @@
+import 'package:declarative_navigation/model/page_configuration.dart';
 import 'package:flutter/material.dart';
-
-import '../model/page_configuration.dart';
 
 class MyRouteInformationParser
     extends RouteInformationParser<PageConfiguration> {
@@ -11,10 +10,8 @@ class MyRouteInformationParser
     final uri = routeInformation.uri;
 
     if (uri.pathSegments.isEmpty) {
-      // without path parameter => "/"
       return HomePageConfiguration();
     } else if (uri.pathSegments.length == 1) {
-      // path parameter => "/aaa"
       final first = uri.pathSegments[0].toLowerCase();
       if (first == 'home') {
         return HomePageConfiguration();
@@ -28,11 +25,10 @@ class MyRouteInformationParser
         return UnknownPageConfiguration();
       }
     } else if (uri.pathSegments.length == 2) {
-      // path parameter => "/aaa/bbb"
       final first = uri.pathSegments[0].toLowerCase();
-      final second = uri.pathSegments[1].toLowerCase();
+      final second = uri.pathSegments[0].toLowerCase();
       final quoteId = int.tryParse(second) ?? 0;
-      
+
       if (first == 'quote' && (quoteId >= 1 && quoteId <= 5)) {
         return DetailQuotePageConfiguration(second);
       } else {
@@ -47,16 +43,16 @@ class MyRouteInformationParser
   RouteInformation? restoreRouteInformation(PageConfiguration configuration) {
     return switch (configuration) {
       UnknownPageConfiguration() => RouteInformation(
-        uri: Uri.parse("/unknown"),
+        uri: Uri.parse('/unknown'),
       ),
-      SplashPageConfiguration() => RouteInformation(uri: Uri.parse("/splash")),
+      SplashPageConfiguration() => RouteInformation(uri: Uri.parse('/splash')),
+      LoginPageConfiguration() => RouteInformation(uri: Uri.parse('/login')),
       RegisterPageConfiguration() => RouteInformation(
-        uri: Uri.parse("/register"),
+        uri: Uri.parse('/register'),
       ),
-      LoginPageConfiguration() => RouteInformation(uri: Uri.parse("/login")),
-      HomePageConfiguration() => RouteInformation(uri: Uri.parse("/")),
+      HomePageConfiguration() => RouteInformation(uri: Uri.parse('/')),
       DetailQuotePageConfiguration() => RouteInformation(
-        uri: Uri.parse("/quote/${configuration.quoteId}"),
+        uri: Uri.parse('/detail/${configuration.quoteId}'),
       ),
     };
   }

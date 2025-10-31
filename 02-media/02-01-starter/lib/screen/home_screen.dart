@@ -1,4 +1,6 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
 
 import '../provider/home_provider.dart';
@@ -68,9 +70,43 @@ class _HomePageState extends State<HomePage> {
 
   _onUpload() async {}
 
-  _onGalleryView() async {}
+  _onGalleryView() async {
+    final provider = context.read<HomeProvider>();
 
-  _onCameraView() async {}
+    final picker = ImagePicker();
+
+    final isMacOS = defaultTargetPlatform == TargetPlatform.macOS;
+    final isLinux = defaultTargetPlatform == TargetPlatform.linux;
+
+    if (isMacOS || isLinux) return;
+
+    final XFile? pickedFile =
+        await picker.pickImage(source: ImageSource.gallery);
+
+    if (pickedFile != null) {
+      provider.setImageFile(pickedFile);
+      provider.setImagePath(pickedFile.path);
+    }
+  }
+
+  _onCameraView() async {
+    final provider = context.read<HomeProvider>();
+
+    final isAndroid = defaultTargetPlatform == TargetPlatform.android;
+    final isIOs = defaultTargetPlatform == TargetPlatform.iOS;
+    final mobilePlatform = (isAndroid && isIOs);
+
+    if (!mobilePlatform) return;
+
+    final picker = ImagePicker();
+    final XFile? pickedFile =
+        await picker.pickImage(source: ImageSource.camera);
+
+    if (pickedFile != null) {
+      provider.setImageFile(pickedFile);
+      provider.setImagePath(pickedFile.path);
+    }
+  }
 
   _onCustomCameraView() async {}
 

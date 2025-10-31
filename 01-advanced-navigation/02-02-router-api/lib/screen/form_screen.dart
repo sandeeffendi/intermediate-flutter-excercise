@@ -15,12 +15,6 @@ class _FormScreenState extends State<FormScreen> {
   final TextEditingController _nameController = TextEditingController();
 
   @override
-  void dispose() {
-    _nameController.dispose();
-    super.dispose();
-  }
-
-  @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(title: const Text('Form Controller')),
@@ -37,7 +31,7 @@ class _FormScreenState extends State<FormScreen> {
             onPressed: () {
               final name = _nameController.text;
 
-              widget.onSend;
+              widget.onSend();
 
               context.read<PageManager>().returnData(name);
             },

@@ -1,10 +1,13 @@
+import 'package:declarative_navigation/common/url_strategy_web.dart';
 import 'package:declarative_navigation/db/auth_repository.dart';
 import 'package:declarative_navigation/provider/auth_provider.dart';
+import 'package:declarative_navigation/routes/route_information_parser.dart';
 import 'package:declarative_navigation/routes/router_delegate.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 void main() {
+  usePathUrlStrategy();
   runApp(const QuotesApp());
 }
 
@@ -20,6 +23,7 @@ class _QuotesAppState extends State<QuotesApp> {
 
   /// todo 6: add variable for create instance
   late AuthProvider authProvider;
+  late MyRouteInformationParser myRouteInformationParser;
 
   @override
   void initState() {
@@ -30,18 +34,19 @@ class _QuotesAppState extends State<QuotesApp> {
 
     /// todo 7: inject auth to router delegate
     myRouterDelegate = MyRouterDelegate(authRepository);
+
+    myRouteInformationParser = MyRouteInformationParser();
   }
 
   @override
   Widget build(BuildContext context) {
     return ChangeNotifierProvider(
       create: (context) => authProvider,
-      child: MaterialApp(
+      child: MaterialApp.router(
         title: 'Quotes App',
-        home: Router(
-          routerDelegate: myRouterDelegate,
-          backButtonDispatcher: RootBackButtonDispatcher(),
-        ),
+        routerDelegate: myRouterDelegate,
+        routeInformationParser: myRouteInformationParser,
+        backButtonDispatcher: RootBackButtonDispatcher(),
       ),
     );
   }
