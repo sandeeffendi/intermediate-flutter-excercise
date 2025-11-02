@@ -1,10 +1,11 @@
+import 'dart:io';
+
 import 'package:camera/camera.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
 import 'package:take_image/screen/camera_screen.dart';
-import '';
 
 import '../provider/home_provider.dart';
 
@@ -113,16 +114,32 @@ class _HomePageState extends State<HomePage> {
 
   _onCustomCameraView() async {
     final navigator = Navigator.of(context);
+    final provider = context.read<HomeProvider>();
 
     final camera = await availableCameras();
 
-    await navigator.push(MaterialPageRoute(
+    final XFile? resultImage = await navigator.push(MaterialPageRoute(
         builder: (context) => CameraScreen(
               camera: camera,
             )));
+
+    if (resultImage != null) {
+      provider.setImageFile(resultImage);
+      provider.setImagePath(resultImage.path);
+    }
   }
 
   Widget _showImage() {
-    return Container();
+    final imagePath = context.read<HomeProvider>().imagePath;
+
+    return kIsWeb
+        ? Image.network(
+            imagePath.toString(),
+            fit: BoxFit.cover,
+          )
+        : Image.file(
+            File(imagePath.toString()),
+            fit: BoxFit.contain,
+          );
   }
 }

@@ -15,6 +15,20 @@ class _CameraScreenState extends State<CameraScreen> {
   bool _isCameraInitialize = false;
 
   @override
+  void initState() {
+    onNewCameraSelected(widget.camera.first);
+
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    controller?.dispose();
+
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Theme(
         data: ThemeData.dark(),
@@ -31,6 +45,9 @@ class _CameraScreenState extends State<CameraScreen> {
           body: Center(
               child: Stack(
             children: [
+              _isCameraInitialize
+                  ? CameraPreview(controller!)
+                  : const Center(child: CircularProgressIndicator()),
               Align(
                 alignment: const Alignment(0, 0.09),
                 child: _actionWidget(),
@@ -49,9 +66,34 @@ class _CameraScreenState extends State<CameraScreen> {
     );
   }
 
-  void onNewCameraSelected() async {}
+  void onNewCameraSelected(CameraDescription cameraDescription) async {
+    final previousCameraController = controller;
+
+    final cameraController =
+        CameraController(cameraDescription, ResolutionPreset.medium);
+
+    await previousCameraController?.dispose();
+
+    try {
+      await cameraController.initialize();
+    } on CameraException catch (e) {
+      throw ('Error Initialize camera: $e');
+    }
+
+    if (!mounted) return;
+    setState(() {
+      controller = cameraController;
+      _isCameraInitialize = controller!.value.isInitialized;
+    });
+  }
 
   Future<void> _onCameraSwitch() async {}
 
-  void _onCameraButtonClick() {}
+  void _onCameraButtonClick() async {
+    final navigator = Navigator.of(context);
+
+    final image = await controller?.takePicture();
+
+    navigator.pop(image);
+  }
 }
