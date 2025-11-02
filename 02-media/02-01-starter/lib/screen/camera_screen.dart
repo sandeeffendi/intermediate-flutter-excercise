@@ -1,5 +1,7 @@
 import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:take_image/provider/camera_provider.dart';
 
 class CameraScreen extends StatefulWidget {
   final List<CameraDescription> camera;
@@ -10,21 +12,29 @@ class CameraScreen extends StatefulWidget {
   State<CameraScreen> createState() => _CameraScreenState();
 }
 
-class _CameraScreenState extends State<CameraScreen> {
+class _CameraScreenState extends State<CameraScreen>
+    with WidgetsBindingObserver {
   CameraController? controller;
-  bool _isCameraInitialize = false;
 
   @override
   void initState() {
-    onNewCameraSelected(widget.camera.first);
+    final cameraProvider = context.read<CameraProvider>();
+    WidgetsBinding.instance.addObserver(this);
+
+    Future.microtask(() async {
+      await cameraProvider.onNewCameraSelected(widget.camera.first);
+    });
 
     super.initState();
   }
 
   @override
   void dispose() {
-    controller?.dispose();
+    final cameraProvider = context.read<CameraProvider>();
 
+    WidgetsBinding.instance.removeObserver(this);
+    cameraProvider.closeCamera();
+    controller?.dispose();
     super.dispose();
   }
 
@@ -35,25 +45,34 @@ class _CameraScreenState extends State<CameraScreen> {
         child: Scaffold(
           appBar: AppBar(
             actions: [
-              IconButton(
-                  onPressed: () {
-                    _onCameraSwitch();
-                  },
-                  icon: const Icon(Icons.camera))
+              Consumer<CameraProvider>(
+                  builder: (context, cameraProvider, child) {
+                return IconButton(
+                    onPressed: () {
+                      cameraProvider.onNewCameraSelected(
+                          cameraProvider.isCameraBackSelected
+                              ? widget.camera[0]
+                              : widget.camera[1]);
+                    },
+                    icon: const Icon(Icons.camera));
+              })
             ],
           ),
-          body: Center(
-              child: Stack(
-            children: [
-              _isCameraInitialize
-                  ? CameraPreview(controller!)
-                  : const Center(child: CircularProgressIndicator()),
-              Align(
-                alignment: const Alignment(0, 0.09),
-                child: _actionWidget(),
-              )
-            ],
-          )),
+          body: Consumer<CameraProvider>(
+              builder: (context, cameraProvider, child) {
+            return Center(
+                child: Stack(
+              children: [
+                cameraProvider.isCameraInitialize
+                    ? CameraPreview(controller!)
+                    : const Center(child: CircularProgressIndicator()),
+                Align(
+                  alignment: const Alignment(0, 0.09),
+                  child: _actionWidget(),
+                )
+              ],
+            ));
+          }),
         ));
   }
 
@@ -66,34 +85,27 @@ class _CameraScreenState extends State<CameraScreen> {
     );
   }
 
-  void onNewCameraSelected(CameraDescription cameraDescription) async {
-    final previousCameraController = controller;
-
-    final cameraController =
-        CameraController(cameraDescription, ResolutionPreset.medium);
-
-    await previousCameraController?.dispose();
-
-    try {
-      await cameraController.initialize();
-    } on CameraException catch (e) {
-      throw ('Error Initialize camera: $e');
-    }
-
-    if (!mounted) return;
-    setState(() {
-      controller = cameraController;
-      _isCameraInitialize = controller!.value.isInitialized;
-    });
-  }
-
-  Future<void> _onCameraSwitch() async {}
-
   void _onCameraButtonClick() async {
     final navigator = Navigator.of(context);
 
     final image = await controller?.takePicture();
 
     navigator.pop(image);
+  }
+
+  void didChangeAppLifecyleState(AppLifecycleState state) {
+    final cameraProvider = context.read<CameraProvider>();
+
+    final CameraController? cameraController = cameraProvider.controller;
+
+    if (cameraController == null || !cameraController.value.isInitialized) {
+      return;
+    }
+
+    if (state == AppLifecycleState.inactive) {
+      cameraController.dispose();
+    } else if (state == AppLifecycleState.resumed) {
+      cameraProvider.onNewCameraSelected(cameraController.description);
+    }
   }
 }
