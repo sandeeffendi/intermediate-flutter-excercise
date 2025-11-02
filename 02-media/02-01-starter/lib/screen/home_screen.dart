@@ -1,7 +1,10 @@
+import 'package:camera/camera.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
+import 'package:take_image/screen/camera_screen.dart';
+import '';
 
 import '../provider/home_provider.dart';
 
@@ -108,7 +111,16 @@ class _HomePageState extends State<HomePage> {
     }
   }
 
-  _onCustomCameraView() async {}
+  _onCustomCameraView() async {
+    final navigator = Navigator.of(context);
+
+    final camera = await availableCameras();
+
+    await navigator.push(MaterialPageRoute(
+        builder: (context) => CameraScreen(
+              camera: camera,
+            )));
+  }
 
   Widget _showImage() {
     return Container();
