@@ -36,5 +36,8 @@ class CameraProvider extends ChangeNotifier {
 
   void closeCamera() {
     controller?.dispose();
+    controller = null;
+    _isCameraInitialize = false;
+    notifyListeners();
   }
 }

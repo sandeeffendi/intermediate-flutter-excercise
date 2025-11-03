@@ -15,14 +15,16 @@ class CameraScreen extends StatefulWidget {
 class _CameraScreenState extends State<CameraScreen>
     with WidgetsBindingObserver {
   CameraController? controller;
+  late CameraProvider _cameraProvider;
 
   @override
   void initState() {
-    final cameraProvider = context.read<CameraProvider>();
+    _cameraProvider = context.read<CameraProvider>();
     WidgetsBinding.instance.addObserver(this);
 
     Future.microtask(() async {
-      await cameraProvider.onNewCameraSelected(widget.camera.first);
+      await _cameraProvider.onNewCameraSelected(widget.camera.first);
+      controller = _cameraProvider.controller;
     });
 
     super.initState();
@@ -30,12 +32,36 @@ class _CameraScreenState extends State<CameraScreen>
 
   @override
   void dispose() {
-    final cameraProvider = context.read<CameraProvider>();
-
     WidgetsBinding.instance.removeObserver(this);
-    cameraProvider.closeCamera();
+    _cameraProvider.closeCamera();
     controller?.dispose();
     super.dispose();
+  }
+
+  // camera button click method
+  void _onCameraButtonClick() async {
+    final navigator = Navigator.of(context);
+
+    final image = await controller?.takePicture();
+
+    navigator.pop(image);
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    final cameraProvider = context.read<CameraProvider>();
+
+    final CameraController? cameraController = cameraProvider.controller;
+
+    if (cameraController == null || !cameraController.value.isInitialized) {
+      return;
+    }
+
+    if (state == AppLifecycleState.inactive) {
+      cameraController.dispose();
+    } else if (state == AppLifecycleState.resumed) {
+      cameraProvider.onNewCameraSelected(cameraController.description);
+    }
   }
 
   @override
@@ -83,29 +109,5 @@ class _CameraScreenState extends State<CameraScreen>
       onPressed: () => _onCameraButtonClick(),
       child: const Icon(Icons.camera_alt),
     );
-  }
-
-  void _onCameraButtonClick() async {
-    final navigator = Navigator.of(context);
-
-    final image = await controller?.takePicture();
-
-    navigator.pop(image);
-  }
-
-  void didChangeAppLifecyleState(AppLifecycleState state) {
-    final cameraProvider = context.read<CameraProvider>();
-
-    final CameraController? cameraController = cameraProvider.controller;
-
-    if (cameraController == null || !cameraController.value.isInitialized) {
-      return;
-    }
-
-    if (state == AppLifecycleState.inactive) {
-      cameraController.dispose();
-    } else if (state == AppLifecycleState.resumed) {
-      cameraProvider.onNewCameraSelected(cameraController.description);
-    }
   }
 }
