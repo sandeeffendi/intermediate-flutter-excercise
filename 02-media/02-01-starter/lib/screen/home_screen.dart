@@ -5,6 +5,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
+import 'package:take_image/provider/upload_provider.dart';
 import 'package:take_image/screen/camera_screen.dart';
 
 import '../provider/home_provider.dart';
@@ -19,13 +20,15 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
-    return Scaffold( 
+    return Scaffold(
       appBar: AppBar(
         title: const Text("Camera Project"),
         actions: [
           IconButton(
             onPressed: () => _onUpload(),
-            icon: const Icon(Icons.upload),
+            icon: context.watch<UploadProvider>().isUploading
+                ? const CircularProgressIndicator()
+                : const Icon(Icons.upload),
             tooltip: "Unggah",
           ),
         ],
@@ -72,7 +75,32 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
-  _onUpload() async {}
+  _onUpload() async {
+    final homeProvider = context.read<HomeProvider>();
+    final uploadProvider = context.read<UploadProvider>();
+
+    final scaffoldMessenger = ScaffoldMessenger.of(context);
+
+    final imageFile = homeProvider.imageFile;
+    final imagePath = homeProvider.imagePath;
+
+    if (imageFile == null || imagePath == null) return;
+
+    final fileName = imageFile.name;
+    final bytes = await imageFile.readAsBytes();
+
+    final newByte = await uploadProvider.compressImage(bytes);
+
+    await uploadProvider.upload(newByte, fileName, 'Deskripsi gambar');
+
+    if (uploadProvider.uploadResponse != null) {
+      homeProvider.setImageFile(null);
+      homeProvider.setImagePath(null);
+    }
+
+    scaffoldMessenger
+        .showSnackBar(SnackBar(content: Text(uploadProvider.message)));
+  }
 
   _onGalleryView() async {
     final provider = context.read<HomeProvider>();
