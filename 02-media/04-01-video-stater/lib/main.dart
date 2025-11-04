@@ -4,7 +4,9 @@ import 'package:provider/provider.dart';
 import 'provider/video_notifier.dart';
 import 'screen/home_screen.dart';
 
-void main() {
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+
   runApp(const MyApp());
 }
 
