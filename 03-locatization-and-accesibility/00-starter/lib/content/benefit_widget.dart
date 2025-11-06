@@ -12,7 +12,7 @@ class BenefitWidget extends StatelessWidget {
       children: [
         Text(
           "Keuntungan Langganan",
-          style: Theme.of(context).textTheme.headline4,
+          style: Theme.of(context).textTheme.headlineMedium,
           softWrap: true,
           overflow: TextOverflow.fade,
           textAlign: TextAlign.center,

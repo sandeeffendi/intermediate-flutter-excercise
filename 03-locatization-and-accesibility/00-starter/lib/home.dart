@@ -28,14 +28,14 @@ class HomePage extends StatelessWidget {
           ),
         ],
       ),
-      body: MaxWidthWidget(
+      body: const MaxWidthWidget(
         maxWidth: 600,
         child: SingleChildScrollView(
           child: Column(
             mainAxisSize: MainAxisSize.max,
             mainAxisAlignment: MainAxisAlignment.start,
             crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: const [
+            children: [
               CostWidget(),
               PackageList(),
               SizedBox(height: 20),
