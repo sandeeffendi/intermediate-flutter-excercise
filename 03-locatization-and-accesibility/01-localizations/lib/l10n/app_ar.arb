@@ -2,7 +2,7 @@
   "titleAppBar": "Dicoding Academy",
   "costTitle": "رسم الاشتراك",
   "costSubtitle": "اختر حزمة اشتراك كاستثمار تعليمي يناسب احتياجاتك.",
-  "paidPackageTitle": "{month,plural, =1{اشتراك لمدة شهر} =2{اشتراك شهرين} other{اشتراك {month} شهور}",
+  "paidPackageTitle": "{month,plural, =1{اشتراك لمدة شهر} =2{اشتراك شهرين} other{اشتراك {month} شهور}}",
   "paidPackagePrice": "{feeSubscription}",
   "paidPackageButton": "اختر الباقة",
   "orText": "أو",
