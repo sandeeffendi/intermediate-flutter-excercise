@@ -1,5 +1,5 @@
+import 'package:dicoding_subscriptions/l10n/app_localizations.dart';
 import 'package:flutter/material.dart';
-
 
 class FreePackageCard extends StatelessWidget {
   const FreePackageCard({Key? key}) : super(key: key);
@@ -19,20 +19,20 @@ class FreePackageCard extends StatelessWidget {
         mainAxisSize: MainAxisSize.min,
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          const Padding(
-            padding: EdgeInsets.all(8.0),
+          Padding(
+            padding: const EdgeInsets.all(8.0),
             child: Text(
-              "Berlangganan 15 hari",
+              AppLocalizations.of(context)!.freePackageTitle(15),
               textAlign: TextAlign.center,
-              style: TextStyle(
+              style: const TextStyle(
                 fontSize: 16,
               ),
             ),
           ),
-          const Padding(
-            padding: EdgeInsets.all(8.0),
+          Padding(
+            padding: const EdgeInsets.all(8.0),
             child: Text(
-              "Gratis",
+              AppLocalizations.of(context)!.freePackagePrice,
               textAlign: TextAlign.center,
             ),
           ),
@@ -40,8 +40,8 @@ class FreePackageCard extends StatelessWidget {
             padding: const EdgeInsets.all(8.0),
             child: OutlinedButton(
               onPressed: () {},
-              child: const Text(
-                "Coba sekarang",
+              child: Text(
+                AppLocalizations.of(context)!.freePackageButton,
                 textAlign: TextAlign.center,
               ),
             ),

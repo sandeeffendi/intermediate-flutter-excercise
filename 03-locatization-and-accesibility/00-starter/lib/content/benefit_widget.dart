@@ -1,6 +1,5 @@
-
-
 import 'package:dicoding_subscriptions/content/benefit_table.dart';
+import 'package:dicoding_subscriptions/l10n/app_localizations.dart';
 import 'package:flutter/material.dart';
 
 class BenefitWidget extends StatelessWidget {
@@ -11,7 +10,7 @@ class BenefitWidget extends StatelessWidget {
     return Column(
       children: [
         Text(
-          "Keuntungan Langganan",
+          AppLocalizations.of(context)!.benefitTitle,
           style: Theme.of(context).textTheme.headlineMedium,
           softWrap: true,
           overflow: TextOverflow.fade,

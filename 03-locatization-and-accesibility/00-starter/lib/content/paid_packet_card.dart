@@ -1,3 +1,4 @@
+import 'package:dicoding_subscriptions/l10n/app_localizations.dart';
 import 'package:flutter/material.dart';
 
 class PaidPackageCard extends StatelessWidget {
@@ -17,21 +18,29 @@ class PaidPackageCard extends StatelessWidget {
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
-          const Padding(
-            padding: EdgeInsets.all(8.0),
+          Padding(
+            padding: const EdgeInsets.all(8.0),
             child: Text(
-              "Berlangganan 1 Bulan (30 hari)",
+              AppLocalizations.of(context)!.paidPackageTitle(1),
               textAlign: TextAlign.center,
-              style: TextStyle(
+              style: const TextStyle(
                 fontSize: 16,
               ),
             ),
           ),
-          const Padding(
-            padding: EdgeInsets.all(8.0),
-            child: Text(
-              "Rp 1,500,000",
-              textAlign: TextAlign.center,
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Localizations.override(
+              context: context,
+              locale: const Locale('id'),
+              child: Builder(
+                builder: (context) {
+                  return Text(
+                    AppLocalizations.of(context)!.paidPackagePrice(1500000),
+                    textAlign: TextAlign.center,
+                  );
+                }
+              ),
             ),
           ),
           Padding(

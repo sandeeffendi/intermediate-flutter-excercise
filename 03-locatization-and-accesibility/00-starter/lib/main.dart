@@ -1,4 +1,5 @@
 import 'package:dicoding_subscriptions/home.dart';
+import 'package:dicoding_subscriptions/l10n/app_localizations.dart';
 import 'package:flutter/material.dart';
 
 void main() {
@@ -25,6 +26,8 @@ class MyApp extends StatelessWidget {
           ),
         ),
       ),
+      localizationsDelegates: AppLocalizations.localizationsDelegates,
+      supportedLocales: AppLocalizations.supportedLocales,
       home: const HomePage(),
     );
   }
