@@ -12,7 +12,7 @@ class CostWidget extends StatelessWidget {
         children: [
           Text(
             AppLocalizations.of(context)!.costTitle,
-            style: Theme.of(context).textTheme.headline4,
+            style: Theme.of(context).textTheme.headlineMedium,
             softWrap: true,
             overflow: TextOverflow.fade,
             textAlign: TextAlign.center,
@@ -20,7 +20,7 @@ class CostWidget extends StatelessWidget {
           const SizedBox(height: 10),
           Text(
             AppLocalizations.of(context)!.costSubtitle,
-            style: Theme.of(context).textTheme.bodyText2,
+            style: Theme.of(context).textTheme.bodyMedium,
             softWrap: true,
             overflow: TextOverflow.fade,
             textAlign: TextAlign.center,

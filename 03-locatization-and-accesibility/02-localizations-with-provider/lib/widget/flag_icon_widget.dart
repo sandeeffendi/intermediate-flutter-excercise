@@ -19,7 +19,7 @@ class FlagIconWidget extends StatelessWidget {
             child: Center(
               child: Text(
                 flag,
-                style: Theme.of(context).textTheme.headline4,
+                style: Theme.of(context).textTheme.headlineMedium,
               ),
             ),
             onTap: () {

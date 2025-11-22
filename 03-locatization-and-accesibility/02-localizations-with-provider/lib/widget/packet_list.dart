@@ -15,22 +15,22 @@ class PackageList extends StatelessWidget {
     return MaxWidthWidget(
       maxWidth: 600,
       child: isPotrait
-          ? Column(
+          ? const Column(
               mainAxisSize: MainAxisSize.max,
               mainAxisAlignment: MainAxisAlignment.center,
               crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: const [
+              children: [
                 PaidPackageCard(),
                 OrWidget(),
                 FreePackageCard(),
               ],
             )
-          : IntrinsicHeight(
+          : const IntrinsicHeight(
               child: Row(
                 mainAxisSize: MainAxisSize.max,
                 mainAxisAlignment: MainAxisAlignment.center,
                 crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: const [
+                children: [
                   Expanded(child: PaidPackageCard()),
                   OrWidget(),
                   Expanded(child: FreePackageCard()),
