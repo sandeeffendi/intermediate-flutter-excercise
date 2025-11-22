@@ -23,7 +23,7 @@ class HomePage extends StatelessWidget {
           const FlagIconWidget(),
           IconButton(
             onPressed: () {
-              AppSettings.openDeviceSettings();
+              AppSettings.openAppSettings(type: AppSettingsType.device);
             },
             icon: const Icon(Icons.settings),
           ),
